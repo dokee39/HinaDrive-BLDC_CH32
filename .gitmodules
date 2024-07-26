@@ -1,0 +1,3 @@
+[submodule "Components/HinaDrive-Lib"]
+	path = Components/HinaDrive-Lib
+	url = git@github.com:dokee39/HinaDrive-Lib.git
