@@ -35,7 +35,7 @@ SZ := $(GCC_PREFIX)size
 GDB := $(GCC_PREFIX)gdb
 HEX := $(CP) -O ihex
 BIN := $(CP) -O binary
-OOCD := openocd-wch-riscv
+OOCD := /usr/bin/openocd-wch-riscv
 OOCDFLAGS := 
 
 
@@ -49,7 +49,8 @@ Components \
 Driver \
 
 ASM_SRCS := \
-startup_ch32v20x_D6.s
+startup_ch32v20x_D6.s \
+Components/FreeRTOS/portable/GCC/RISC-V/portASM.S
 
 # where the output files are stored
 BUILD_DIR := ./build
@@ -147,12 +148,13 @@ flash: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).bin $(BUILD_DIR)/$(TARG
 
 .PHONY: debug
 debug: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).bin $(BUILD_DIR)/$(TARGET).hex
-	@echo -e "\e[1;33mgenerating debug files...\e[0;0m"
-	@echo "#!/bin/sh" > debug-ocd.sh
-	@echo "#!/bin/sh" > debug-gdb.sh
-	@echo "openocd -f interface/cmsis-dap.cfg -f target/stm32f4x.cfg" >> debug-ocd.sh
-	@echo "gdbfrontend -g /usr/bin/arm-none-eabi-gdb -G $(BUILD_DIR)/$(TARGET).elf -V" >> debug-gdb.sh
-
+	@echo -e "\e[1;33mgenerating debug files...\e[0m"
+	@echo "#!/bin/sh" > debug.sh
+	@echo "$(OOCD) &" >> debug.sh
+	@echo "gdbfrontend -g $(GDB) -G '-ex \"target remote localhost:3333\" -ex \"break main\" -ex \"load\" -ex \"c\" $(BUILD_DIR)/$(TARGET).elf' -V" >> debug.sh
+	@echo "kill -9 \$$(pgrep openocd)" >> debug.sh
+	@chmod +x debug.sh
+	
 # --------------------------------------------------------------
 # dependencies
 # --------------------------------------------------------------

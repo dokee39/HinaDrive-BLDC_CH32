@@ -6,7 +6,7 @@ extern "C" {
 
 #include "ch32v20x.h"
 
-#define SYSTICK_PERIOD_US       (100)
+#define SYSTICK_PERIOD_US       (1000)
 #define US_TO_TICK(t)           ((t) / SYSTICK_PERIOD_US)
 #define TIM_CNT_PERIOD_1_10_US  (5)
 #define US_TO_CNT(t)            ((t) * 10 / TIM_CNT_PERIOD_1_10_US)
@@ -40,9 +40,6 @@ extern "C" {
 #define INPUT_GPIO_PORT         GPIOA
 
 #define EXTI_GPIO_PIN           GPIO_Pin_2
-
-#define REG_ON                  BSHR
-#define REG_OFF                 BCR
 
 #define OPA_CHANNEL             (OPA->CR)
 #define OPA_SELECT_U            (0x0001)

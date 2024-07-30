@@ -14,11 +14,6 @@ void NMI_Handler(void)
     
 }
 
-void SysTick_Handler(void)
-{
-    SysTick->SR = 0;
-}
-
 void HardFault_Handler(void)
 {
     __disable_irq();

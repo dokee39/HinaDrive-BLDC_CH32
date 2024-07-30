@@ -1,6 +1,12 @@
 #include "main.h"
-#include "ch32v20x_it.h"
+#include "FreeRTOS.h"
+#include "task.h"
 #include "hina.hpp"
+#include "led_task.hpp"
+
+const hina::Param param {
+    .dir = hina::eCW,
+};
 
 const hina::portHardware hardware {
     .ptimer_duty_register = {
@@ -11,20 +17,38 @@ const hina::portHardware hardware {
     .duty_max = 3000,
 
     .pfloat_pin_register = &TIM_PWM->CCER,
-    .float_pin_register_set = { 0x055D, 0x05D5, 0x0D55, 0x0555 },
+    .float_pin_register_mask = { 0x0008, 0x0080, 0x0800 },
 };
 
 static void peripheral_init(void);
 
 int main(void)
 {
+    TaskHandle_t xCreatedLedTask;
+
     __disable_irq();
 
     peripheral_init();
 
-    hina::Inverter inverter(hardware);
+    hina::Inverter inverter(param, hardware);
+    // inverter.FloatAll();
+    inverter.Brake();
+    int32_t step = 0;
+    inverter.SixStepChangePhase(step);
+    inverter.SixStepSetDuty(step, 0.05);
+
+    xTaskCreate(
+        LedTask,
+        "led task",
+        configMINIMAL_STACK_SIZE * 1,
+        NULL,
+        (tskIDLE_PRIORITY + 1),
+        &xCreatedLedTask
+    );
     
     __enable_irq();
+
+    vTaskStartScheduler();
 
     while(1)
     {

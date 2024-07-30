@@ -71,7 +71,7 @@ out/
 .mxproject
 .nvim.lua
 .tech-ref/
-debug-*
+debug*
 dkms.conf
 gdb-*
 modules.order
