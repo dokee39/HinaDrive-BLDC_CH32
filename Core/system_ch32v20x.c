@@ -236,7 +236,7 @@ static void SetSysClock(void)
  
  /* If none of the define above is enabled, the HSI is used as System clock
   * source (default after reset) 
-    */
+	*/ 
 }
 
 
@@ -296,9 +296,9 @@ static void SetSysClockToHSE(void)
   }
   else
   { 
-        /* If HSE fails to start-up, the application will have wrong clock
+		/* If HSE fails to start-up, the application will have wrong clock 
      * configuration. User can add here some code to deal with this error 
-         */
+		 */
   }  
 }
 
@@ -366,10 +366,10 @@ static void SetSysClockTo48_HSE(void)
   }
   else
   { 
-        /*
-         * If HSE fails to start-up, the application will have wrong clock
+		/* 
+		 * If HSE fails to start-up, the application will have wrong clock 
      * configuration. User can add here some code to deal with this error 
-         */
+		 */
   } 
 }
 
@@ -438,10 +438,10 @@ static void SetSysClockTo56_HSE(void)
   }
   else
   { 
-        /*
-         * If HSE fails to start-up, the application will have wrong clock
+		/* 
+		 * If HSE fails to start-up, the application will have wrong clock 
      * configuration. User can add here some code to deal with this error 
-         */
+		 */
   } 
 }
 
@@ -510,10 +510,10 @@ static void SetSysClockTo72_HSE(void)
   }
   else
   { 
-        /*
-         * If HSE fails to start-up, the application will have wrong clock
+		/* 
+		 * If HSE fails to start-up, the application will have wrong clock 
      * configuration. User can add here some code to deal with this error 
-         */
+		 */
   }
 }
 
@@ -958,14 +958,14 @@ static void SetSysClockTo144_HSI(void)
     /* HCLK = SYSCLK */
     RCC->CFGR0 |= (uint32_t)RCC_HPRE_DIV1;
     /* PCLK2 = HCLK */
-    RCC->CFGR0 |= (uint32_t)RCC_PPRE2_DIV2;
+    RCC->CFGR0 |= (uint32_t)RCC_PPRE2_DIV1;
     /* PCLK1 = HCLK */
     RCC->CFGR0 |= (uint32_t)RCC_PPRE1_DIV2;
 
     /*  PLL configuration: PLLCLK = HSI * 18 = 144 MHz */
     RCC->CFGR0 &= (uint32_t)((uint32_t)~(RCC_PLLSRC | RCC_PLLXTPRE | RCC_PLLMULL));
 
-    RCC->CFGR0 |= (uint32_t)(RCC_PLLSRC_HSI_Div2 | RCC_PLLMULL18);
+     RCC->CFGR0 |= (uint32_t)(RCC_PLLSRC_HSI_Div2 | RCC_PLLMULL18);
 
     /* Enable PLL */
     RCC->CTLR |= RCC_PLLON;

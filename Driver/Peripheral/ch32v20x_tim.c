@@ -1525,14 +1525,11 @@ void TIM_OC4PolarityConfig(TIM_TypeDef *TIMx, uint16_t TIM_OCPolarity)
  */
 void TIM_CCxCmd(TIM_TypeDef *TIMx, uint16_t TIM_Channel, uint16_t TIM_CCx)
 {
-    uint16_t reg = TIMx->CCER;
     uint16_t tmp = 0;
 
     tmp = CCER_CCE_Set << TIM_Channel;
-    reg &= (uint16_t)~tmp;
-    reg |= (uint16_t)(TIM_CCx << TIM_Channel);
-
-    TIMx->CCER = reg;
+    TIMx->CCER &= (uint16_t)~tmp;
+    TIMx->CCER |= (uint16_t)(TIM_CCx << TIM_Channel);
 }
 
 /*********************************************************************
@@ -1553,15 +1550,11 @@ void TIM_CCxCmd(TIM_TypeDef *TIMx, uint16_t TIM_Channel, uint16_t TIM_CCx)
  */
 void TIM_CCxNCmd(TIM_TypeDef *TIMx, uint16_t TIM_Channel, uint16_t TIM_CCxN)
 {
-    uint16_t reg = TIMx->CCER;
-
     uint16_t tmp = 0;
 
     tmp = CCER_CCNE_Set << TIM_Channel;
-    reg &= (uint16_t)~tmp;
-    reg |= (uint16_t)(TIM_CCxN << TIM_Channel);
-
-    TIMx->CCER = reg;
+    TIMx->CCER &= (uint16_t)~tmp;
+    TIMx->CCER |= (uint16_t)(TIM_CCxN << TIM_Channel);
 }
 
 /*********************************************************************

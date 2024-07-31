@@ -5,11 +5,15 @@
 
 namespace hina {
 struct portHardware final {
-    volatile uint16_t *ptimer_duty_register[ePhaseNum];
-    uint16_t duty_max;
+    volatile uint16_t * const ptimer_duty_reg[ePhaseNum];
+    const uint16_t duty_max;
     
-    volatile uint16_t *pfloat_pin_register;
-    uint16_t float_pin_register_mask[ePhaseNum];
+    volatile uint16_t &float_pin_reg;
+    const uint16_t float_pin_reg_mask[ePhaseNum];
+
+    const uint32_t opa_select[ePhaseNum + 1];
+    const uint16_t opa_exit_pin[ePhaseNum];
+    const uint16_t opa_exit_pin_all = opa_exit_pin[ePhaseA] | opa_exit_pin[ePhaseB] | opa_exit_pin[ePhaseC];
 };
 }
 

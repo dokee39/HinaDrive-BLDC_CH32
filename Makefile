@@ -21,7 +21,8 @@ GCC_PREFIX := /opt/wch/mounriver-studio-toolchain-riscv-gcc/bin/riscv-none-embed
 MCU := -march=rv32imac -mabi=ilp32 
 # macros for gcc
 AS_DEFINES :=
-C_DEFINES :=
+C_DEFINES := \
+CH32V20x_D6
 
 # link script
 LDSCRIPT := Link.ld

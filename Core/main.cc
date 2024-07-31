@@ -4,20 +4,23 @@
 #include "hina.hpp"
 #include "led_task.hpp"
 
-const hina::Param param {
+hina::Param param {
     .dir = hina::eCW,
 };
 
-const hina::portHardware hardware {
-    .ptimer_duty_register = {
+hina::portHardware hardware {
+    .ptimer_duty_reg = {
         &TIM_PWM->CH1CVR,
         &TIM_PWM->CH2CVR,
         &TIM_PWM->CH3CVR,
     },
     .duty_max = 3000,
 
-    .pfloat_pin_register = &TIM_PWM->CCER,
-    .float_pin_register_mask = { 0x0008, 0x0080, 0x0800 },
+    .float_pin_reg = TIM_PWM->CCER,
+    .float_pin_reg_mask = { 0x0008, 0x0080, 0x0800 },
+
+    .opa_select = { OPA_SELECT_A, OPA_SELECT_B, OPA_SELECT_C },
+    .opa_exit_pin = { GPIO_Pin_2, GPIO_Pin_2, GPIO_Pin_2 },
 };
 
 static void peripheral_init(void);
@@ -26,16 +29,18 @@ int main(void)
 {
     TaskHandle_t xCreatedLedTask;
 
-    __disable_irq();
+    // __disable_irq();
 
     peripheral_init();
 
-    hina::Inverter inverter(param, hardware);
-    // inverter.FloatAll();
+    hina::Inverter inverter(hardware, param);
+    inverter.FloatAll();
     inverter.Brake();
     int32_t step = 0;
     inverter.SixStepChangePhase(step);
-    inverter.SixStepSetDuty(step, 0.05);
+    inverter.SixStepSetDuty(step, 0.02);
+
+    hina::ZeroCrossDetector zcd(hardware);
 
     xTaskCreate(
         LedTask,
@@ -46,7 +51,7 @@ int main(void)
         &xCreatedLedTask
     );
     
-    __enable_irq();
+    // __enable_irq();
 
     vTaskStartScheduler();
 
