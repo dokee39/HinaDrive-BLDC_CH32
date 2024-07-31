@@ -1,7 +1,5 @@
 #include "led_task.hpp"
 #include "main.h"
-#include "FreeRTOS.h"
-#include "task.h"
 
 namespace led {
 void Led::Init(void)
@@ -27,16 +25,8 @@ void Led::Toggle(void)
 }
 }
 
-void LedTask(void *arg)
+void LedTask(void)
 {
-    TickType_t xLastWakeTime;
-
-    led::Led led(LED_PIN_PORT, LED_PIN);
-
-    xLastWakeTime = xTaskGetTickCount();
-
-    for (;;) {
-        led.Toggle();
-        vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(500));
-    }
+    static led::Led led(LED_PIN_PORT, LED_PIN);
+    led.Toggle();
 }

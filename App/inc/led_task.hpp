@@ -29,5 +29,5 @@ private:
 };
 }
 
-void LedTask(void *arg);
+void LedTask();
 

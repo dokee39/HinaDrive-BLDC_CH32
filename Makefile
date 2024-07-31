@@ -51,7 +51,7 @@ Driver \
 
 ASM_SRCS := \
 startup_ch32v20x_D6.s \
-Components/FreeRTOS/portable/GCC/RISC-V/portASM.S
+# Components/FreeRTOS/portable/GCC/RISC-V/portASM.S
 
 # where the output files are stored
 BUILD_DIR := ./build

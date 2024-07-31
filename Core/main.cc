@@ -1,8 +1,7 @@
 #include "main.h"
-#include "FreeRTOS.h"
-#include "task.h"
 #include "hina.hpp"
 #include "led_task.hpp"
+#include "timeslice_task.h"
 
 hina::Param param {
     .dir = hina::eCW,
@@ -27,9 +26,9 @@ static void peripheral_init(void);
 
 int main(void)
 {
-    TaskHandle_t xCreatedLedTask;
+    // TaskHandle_t xCreatedLedTask;
 
-    // __disable_irq();
+    __disable_irq();
 
     peripheral_init();
 
@@ -41,19 +40,13 @@ int main(void)
     inverter.SixStepSetDuty(step, 0.02);
 
     hina::ZeroCrossDetector zcd(hardware);
+    zcd.EnableAll();
 
-    xTaskCreate(
-        LedTask,
-        "led task",
-        configMINIMAL_STACK_SIZE * 1,
-        NULL,
-        (tskIDLE_PRIORITY + 1),
-        &xCreatedLedTask
-    );
+    TimesliceTaskObj obj_led_task;
+    timeslice_task_init(&obj_led_task, LedTask, 1, US_TO_TICK(LED_TASK_INTERVAL));
+    timeslice_task_add(&obj_led_task);
     
-    // __enable_irq();
-
-    vTaskStartScheduler();
+    __enable_irq();
 
     while(1)
     {
@@ -63,6 +56,9 @@ int main(void)
 
 static void peripheral_init(void)
 {
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+    SystemCoreClockUpdate();
+
     GPIO_InitTypeDef        GPIO_InitStruct           = {0};
     EXTI_InitTypeDef        EXTI_InitStructure        = {0};
     TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure = {0};
@@ -112,7 +108,7 @@ static void peripheral_init(void)
     EXTI_InitStructure.EXTI_LineCmd = ENABLE;
     EXTI_Init(&EXTI_InitStructure);
     EXTI_ClearITPendingBit(EXTI_Line2);
-    NVIC_SetPriority(EXTI2_IRQn, 0x00);
+    NVIC_SetPriority(EXTI2_IRQn, 0xF0);
     NVIC_EnableIRQ(EXTI2_IRQn);
     NVIC_EnableIRQ(SysTicK_IRQn);
 
@@ -237,7 +233,7 @@ static void peripheral_init(void)
     NVIC_EnableIRQ(TIM2_IRQn);
     TIM_Cmd(TIM2, ENABLE);
 
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE );
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
     TIM_TimeBaseInitStructure.TIM_Period            = 0xFFFF;
     TIM_TimeBaseInitStructure.TIM_Prescaler         = SystemCoreClock / (1000000 * 10 / TIM_CNT_PERIOD_1_10_US) - 1;
     TIM_TimeBaseInitStructure.TIM_ClockDivision     = TIM_CKD_DIV1;
