@@ -8,12 +8,13 @@ extern "C" {
 
 #define SYSTICK_PERIOD_US       (1000)
 #define US_TO_TICK(t)           ((t) / SYSTICK_PERIOD_US)
-#define TIM_CNT_PERIOD_1_10_US  (5)
+#define TIM_CNT_PERIOD_1_10_US  (1)
 #define US_TO_CNT(t)            ((t) * 10 / TIM_CNT_PERIOD_1_10_US)
 
 #define TIM_PWM                 TIM1
 #define BLDC_DUTY_MAX           3000
 #define BLDC_DUTY_CHARGE        10
+#define TIM_COUNTER             TIM3
 
 #define LED_TASK_INTERVAL       (250000)
 #define BLDC_CTRL_TASK_INTERVAL (100)

@@ -50,6 +50,4 @@ void TIM4_IRQHandler(void)
 
 void EXTI2_IRQHandler(void)
 {
-    ((LED_PIN_PORT))->OUTDR ^= LED_PIN;
-    EXTI->INTFR = GPIO_Pin_2;
 }

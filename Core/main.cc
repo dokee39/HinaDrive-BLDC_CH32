@@ -8,7 +8,7 @@ hina::Param param {
 };
 
 hina::portHardware hardware {
-    .ptimer_duty_reg = {
+    .ppwm_duty_reg = {
         &TIM_PWM->CH1CVR,
         &TIM_PWM->CH2CVR,
         &TIM_PWM->CH3CVR,
@@ -20,27 +20,17 @@ hina::portHardware hardware {
 
     .opa_select = { OPA_SELECT_A, OPA_SELECT_B, OPA_SELECT_C },
     .opa_exit_pin = { GPIO_Pin_2, GPIO_Pin_2, GPIO_Pin_2 },
+
+    .timer = TIM_COUNTER,
 };
 
 static void peripheral_init(void);
 
 int main(void)
 {
-    // TaskHandle_t xCreatedLedTask;
-
     __disable_irq();
 
     peripheral_init();
-
-    hina::Inverter inverter(hardware, param);
-    inverter.FloatAll();
-    inverter.Brake();
-    int32_t step = 0;
-    inverter.SixStepChangePhase(step);
-    inverter.SixStepSetDuty(step, 0.02);
-
-    hina::ZeroCrossDetector zcd(hardware);
-    zcd.EnableAll();
 
     TimesliceTaskObj obj_led_task;
     timeslice_task_init(&obj_led_task, LedTask, 1, US_TO_TICK(LED_TASK_INTERVAL));
